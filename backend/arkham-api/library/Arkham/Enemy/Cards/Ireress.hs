@@ -4,7 +4,7 @@ import Arkham.Ability
 import Arkham.Cost (Cost (..))
 import Arkham.Enemy.CardDefs.Fenris qualified as Cards
 import Arkham.Enemy.Import.Lifted
-import Arkham.Evade (mkChooseEvade)
+import Arkham.Evade (ChooseEvade (..), mkChooseEvade)
 import Arkham.Fight (mkFightEnemy)
 import Arkham.Matcher
 import Arkham.Message.Lifted.Choose
