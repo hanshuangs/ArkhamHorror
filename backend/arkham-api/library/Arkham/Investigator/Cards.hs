@@ -117,6 +117,7 @@ allInvestigatorCards =
       , jennyBarnesParallel
       , lolaHayesParallel
       , miguelDeLaCruz
+      , fenris
       ]
 
 allEncounterInvestigatorCards :: Map CardCode CardDef
@@ -820,6 +821,10 @@ jennyBarnesParallel =
 lolaHayesParallel :: CardDef
 lolaHayesParallel =
   investigator "90087" ("Lola Hayes" <:> "The Actress") Neutral [Performer]
+
+fenris :: CardDef
+fenris =
+  investigator "99100" ("Fenris" <:> "The DJ") Neutral [Drifter, Performer, HomebrewTrait "GMod"]
 
 tommyMuldoon2 :: CardDef
 tommyMuldoon2 =

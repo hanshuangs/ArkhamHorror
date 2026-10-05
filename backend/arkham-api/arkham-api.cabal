@@ -2215,6 +2215,7 @@ library
       Arkham.Asset.Assets.WoodenSledge
       Arkham.Asset.Assets.WorryRockTokenOfSafety
       Arkham.Asset.Assets.WoundedBystanderOnDeathsDoorstep
+      Arkham.Asset.Assets.Wyldside
       Arkham.Asset.Assets.Yaotl1
       Arkham.Asset.Assets.YhanthleiStatueDynamicRelic
       Arkham.Asset.Assets.YhanthleiStatueMysteriousRelic
@@ -2229,6 +2230,7 @@ library
       Arkham.Asset.Cards.ChildrenOfBlood
       Arkham.Asset.Cards.Core2026
       Arkham.Asset.Cards.EdgeOfTheEarth
+      Arkham.Asset.Cards.Fenris
       Arkham.Asset.Cards.Import
       Arkham.Asset.Cards.MarieLambeau2
       Arkham.Asset.Cards.MiguelDeLaCruz
@@ -2557,6 +2559,7 @@ library
       Arkham.Enemy.CardDefs.EdgeOfTheEarth.ToTheForbiddenPeaks
       Arkham.Enemy.CardDefs.EnthrallingEncore
       Arkham.Enemy.CardDefs.ExcelsiorManagement
+      Arkham.Enemy.CardDefs.Fenris
       Arkham.Enemy.CardDefs.FilmFatale
       Arkham.Enemy.CardDefs.FortuneAndFolly
       Arkham.Enemy.CardDefs.GuardiansOfTheAbyss.BrotherhoodOfTheBeast
@@ -2929,6 +2932,7 @@ library
       Arkham.Enemy.Cards.GuardiansOfTheAbyss.TheNightsUsurper.SpeakerForTheDarkPharaoh
       Arkham.Enemy.Cards.GuardiansOfTheAbyss.TheNightsUsurper.Xzharah
       Arkham.Enemy.Cards.Hoods
+      Arkham.Enemy.Cards.Ireress
       Arkham.Enemy.Cards.LaidToRest.JeanDevereuxPossessed
       Arkham.Enemy.Cards.LaidToRest.JeanDevereuxSeekingClosure
       Arkham.Enemy.Cards.LaidToRest.RavenousSpirit
@@ -5123,6 +5127,7 @@ library
       Arkham.Investigator.Cards.DianaStanley
       Arkham.Investigator.Cards.FatherMateo
       Arkham.Investigator.Cards.FatherMateoParallel
+      Arkham.Investigator.Cards.Fenris
       Arkham.Investigator.Cards.FinnEdwards
       Arkham.Investigator.Cards.GavriellaMizrah
       Arkham.Investigator.Cards.GeorgeBarnaby

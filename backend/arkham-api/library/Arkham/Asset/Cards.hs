@@ -5,6 +5,7 @@ import Arkham.Asset.Cards.CarolynFern2 as X
 import Arkham.Asset.Cards.ChildrenOfBlood as X
 import Arkham.Asset.Cards.Core2026 as X
 import Arkham.Asset.Cards.EdgeOfTheEarth as X
+import Arkham.Asset.Cards.Fenris as X
 import Arkham.Asset.Cards.MarieLambeau2 as X
 import Arkham.Asset.Cards.MiguelDeLaCruz as X
 import Arkham.Asset.Cards.NightOfTheZealot as X
@@ -1233,6 +1234,7 @@ allEncounterAssetCards =
       , obsidianClaw
       , obsidianClawPower
       , horrorInClay
+      , wyldside
       ]
 
 allSpecialPlayerAssetCards :: Map CardCode CardDef

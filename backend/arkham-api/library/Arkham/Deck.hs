@@ -76,4 +76,9 @@ pattern HunchDeck iid <- InvestigatorDeckByKey iid Key.HunchDeck
   where
     HunchDeck iid = InvestigatorDeckByKey iid Key.HunchDeck
 
+pattern WylderDeck :: InvestigatorId -> DeckSignifier
+pattern WylderDeck iid <- InvestigatorDeckByKey iid Key.WylderDeck
+  where
+    WylderDeck iid = InvestigatorDeckByKey iid Key.WylderDeck
+
 $(deriveJSON defaultOptions ''DeckSignifier)

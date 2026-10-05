@@ -1700,4 +1700,5 @@ allAssets =
       , SomeAssetCard obsidianClawPower
       , SomeAssetCard johnRaymondLegrasse
       , SomeAssetCard horrorInClay
+      , SomeAssetCard wyldside
       ]

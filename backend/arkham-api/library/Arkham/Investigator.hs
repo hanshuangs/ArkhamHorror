@@ -173,6 +173,7 @@ allInvestigators =
       , SomeInvestigatorCard fatherMateoParallel
       , SomeInvestigatorCard jennyBarnesParallel
       , SomeInvestigatorCard lolaHayesParallel
+      , SomeInvestigatorCard fenris
       ]
 
 becomeYithian :: Investigator -> Investigator
