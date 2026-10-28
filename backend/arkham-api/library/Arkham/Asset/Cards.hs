@@ -1079,6 +1079,7 @@ allPlayerAssetCards =
       , woodenSledge
       , worryRockTokenOfSafety
       , woundedBystanderOnDeathsDoorstep
+      , wyldside
       , yaotl1
       , zeal
       , zebulonWhateley
@@ -1234,7 +1235,6 @@ allEncounterAssetCards =
       , obsidianClaw
       , obsidianClawPower
       , horrorInClay
-      , wyldside
       ]
 
 allSpecialPlayerAssetCards :: Map CardCode CardDef
