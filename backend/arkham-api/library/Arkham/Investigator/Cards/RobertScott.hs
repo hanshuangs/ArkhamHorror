@@ -65,6 +65,7 @@ instance RunMessage RobertScott where
         CardIdTarget cid -> pure $ any ((== cid) . toCardId) (attrs.investigatorHand <> map toCard attrs.discard)
         AssetTarget aid -> selectAny (AssetWithId aid <> assetControlledBy attrs.id)
         EventTarget eid -> selectAny (EventWithId eid <> EventControlledBy (be attrs))
+        SkillTarget sid -> selectAny (SkillWithId sid <> SkillControlledBy (be attrs))
         _ -> pure False
       attrs' <- liftRunMessage msg attrs
       let state = robertScottState attrs.meta
@@ -76,7 +77,7 @@ instance RunMessage RobertScott where
           attrs' <- liftRunMessage msg attrs
           let state = (robertScottState attrs.meta) {pendingExiles = filter (/= target) (robertScottState attrs.meta).pendingExiles}
           if any ((== toCardId card) . toCardId) state.exiledCards
-            then pure $ RobertScott attrs'
+            then pure $ RobertScott $ saveState state attrs'
             else do
               push $ RemoveCardFromDeckForCampaign (fromMaybe attrs.id card.owner) (toCardId card)
               pure $ RobertScott $ saveState (state {exiledCards = state.exiledCards <> [card]}) attrs'

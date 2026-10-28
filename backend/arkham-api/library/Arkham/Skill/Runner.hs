@@ -64,6 +64,9 @@ instance RunMessage SkillAttrs where
       pure a
     Discarded (isTarget a -> True) _ _ -> do
       runMessage (RemoveFromPlay (toSource a)) a
+    Exile target | a `isTarget` target -> do
+      pushAll [RemoveFromPlay $ toSource a, Exiled target (toCard a)]
+      pure a
     RemoveFromPlay source | isSource a source -> do
       windowMsg <-
         checkWindows

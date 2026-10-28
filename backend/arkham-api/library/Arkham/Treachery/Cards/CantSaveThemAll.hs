@@ -21,9 +21,9 @@ instance HasAbilities CantSaveThemAll where
           , InvestigatorTakeHorror #after (affectsOthers $ colocatedWithMatch You <> not_ You) AnySource
           ]
     , withTooltip "$cards.tooltips.cantSaveThemAll.discard" $ restricted attrs 2 (InThreatAreaOf You)
-        $ ActionAbility [] Nothing (ActionCost 3)
+        $ ActionAbility mempty Nothing (ActionCost 3)
     , withTooltip "$cards.tooltips.cantSaveThemAll.exile" $ restricted attrs 3 (InThreatAreaOf You)
-        $ ActionAbility [] Nothing (ActionCost 1 <> ExileFromCost (InHandOf ForPlay You <> basic (exilableLevels [0 .. 5])))
+        $ ActionAbility mempty Nothing (ActionCost 1 <> ExileFromCost (InHandOf ForPlay You <> basic (exilableLevels [0 .. 5])))
     ]
 
 instance RunMessage CantSaveThemAll where

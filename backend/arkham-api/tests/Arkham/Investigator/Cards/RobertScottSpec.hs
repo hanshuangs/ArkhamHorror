@@ -7,6 +7,7 @@ import Arkham.Helpers.Scenario (getVictoryDisplay)
 import Arkham.Investigator.Cards qualified as Investigators
 import Arkham.Investigator.RobertScott
 import Arkham.PlayerCard (allPlayerCards)
+import Arkham.Skill.Cards qualified as Skills
 import Arkham.Treachery.CardDefs.RobertScott qualified as Treacheries
 import Data.Map.Strict qualified as Map
 import TestImport qualified as TI
@@ -101,6 +102,17 @@ spec = describe "Robert Scott" do
       applyResults
       clickLabel "$label.cards.robertScott.gainResource"
       self.resources `shouldReturn` 1
+
+  it "records a committed skill that is exiled from play"
+    . gameTestWith Investigators.robertScott $ \self -> do
+      card <- genMyCard self Skills.strokeOfLuck2
+      sid <- getRandom
+      run $ CreateSkill sid card self.id Limbo
+      run $ Exile (SkillTarget sid)
+      select (SkillWithId sid) `shouldReturn` []
+      state <- getRobertScottState self.id
+      state.exiledCards `shouldBe` [card]
+      availableExiledCards state `shouldBe` [card]
 
   it "Jet Strike counts earlier exiles even after recovery, with a maximum of three bonus damage"
     . gameTestWith Investigators.robertScott $ \self -> do
