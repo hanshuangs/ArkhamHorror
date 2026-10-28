@@ -4,6 +4,7 @@ import Arkham.Card.CardCode
 import Data.Aeson (eitherDecode, encode)
 import Data.Map.Strict qualified as Map
 import Test.Hspec
+import Prelude (Either (Right), Int, String)
 
 spec :: Spec
 spec = describe "CardCode equality" do
