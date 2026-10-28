@@ -50,7 +50,8 @@ spec = describe "Ireress" do
     $ \self -> do
       withProp @"resources" 2 self
       withProp @"combat" 5 self
-      location <- testLocation
+      -- Keep Roland's defeat reaction from pausing the fight before it is recorded.
+      location <- testLocation & prop @"clues" 0
       self `moveTo` location
       ireress <- createWeaknessEnemy self Enemies.ireress
       -- Avoid spawning its swarm: only the unengaged host's action choices
