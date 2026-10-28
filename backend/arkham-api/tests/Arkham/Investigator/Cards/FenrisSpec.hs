@@ -78,7 +78,7 @@ spec = describe "Fenris" do
     . gameTestWith Investigators.fenris
     $ \self -> do
       copyInvestigator self Investigators.gloriaGoldberg
-      run $ UseThisAbility self.id (toSource self) 1
+      run $ UseCardAbility self.id (toSource self) 1 [] NoPayment
       current <- toAttrs <$> getInvestigator self.id
       investigatorMeta current `shouldBe` Null
       reloadInvestigator self
@@ -87,7 +87,7 @@ spec = describe "Fenris" do
       other <- genMyCard self Skills.perception
       withProp @"hand" [other] self
       withProp @"deck" (Deck [card]) self
-      run $ UseThisAbility self.id (toSource self) 1
+      run $ UseCardAbility self.id (toSource self) 1 [] NoPayment
       chooseTarget card
       field InvestigatorCardsUnderneath self.id `shouldReturn` [toCard card]
 
