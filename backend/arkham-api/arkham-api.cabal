@@ -5208,6 +5208,7 @@ library
       Arkham.Investigator.Runner.Movement
       Arkham.Investigator.Runner.Search
       Arkham.Investigator.Types
+      Arkham.Investigator.Wylder
       Arkham.Json
       Arkham.Key
       Arkham.Keyword
@@ -8977,6 +8978,7 @@ test-suite spec
       Arkham.Asset.Assets.ValeLanternExtinguishedLightSpec
       Arkham.Asset.Assets.WalkInFaithSpec
       Arkham.Asset.Assets.WendysAmuletSpec
+      Arkham.Asset.Assets.WyldsideSpec
       Arkham.Asset.Assets.ZoeysCrossSpec
       Arkham.Asset.RunnerSpec
       Arkham.Campaign.NightOfTheZealot.ScenariosSpec
@@ -8997,6 +8999,7 @@ test-suite spec
       Arkham.Enemy.Cards.BrethrenOfAsh.FlyingTerrors.BatHorrorSpec
       Arkham.Enemy.Cards.EdgeOfTheEarth.ElderThings.GuardianElderThingSpec
       Arkham.Enemy.Cards.GuardianOfTheCrystallizerSpec
+      Arkham.Enemy.Cards.IreressSpec
       Arkham.Enemy.Cards.LaidToRest.JeanDevereuxSeekingClosureSpec
       Arkham.Enemy.Cards.MobEnforcerSpec
       Arkham.Enemy.Cards.NightOfTheZealot.TheMidnightMasks.TheMaskedHunterSpec
@@ -9106,6 +9109,8 @@ test-suite spec
       Arkham.Investigator.Cards.DaisyWalkerSpec
       Arkham.Investigator.Cards.DianaStanleySpec
       Arkham.Investigator.Cards.FatherMateoParallelSpec
+      Arkham.Investigator.Cards.FenrisSetupSpec
+      Arkham.Investigator.Cards.FenrisSpec
       Arkham.Investigator.Cards.JennyBarnesSpec
       Arkham.Investigator.Cards.JimCulverSpec
       Arkham.Investigator.Cards.JoeDiamondSpec
@@ -9123,6 +9128,7 @@ test-suite spec
       Arkham.Investigator.Cards.WendyAdamsSpec
       Arkham.Investigator.Cards.ZoeySamarasSpec
       Arkham.Investigator.RunnerSpec
+      Arkham.Investigator.WylderSpec
       Arkham.Location.Cards.DreamGatePointlessRealitySpec
       Arkham.Location.Cards.DreamGateWondrousJourneySpec
       Arkham.Location.Cards.TheDreamEaters.BeyondTheGatesOfSleep.EnchantedWoodsVillageOfZoogsSpec

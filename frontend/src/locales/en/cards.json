@@ -1,5 +1,8 @@
 {
   "label": {
+    "fenris": {
+      "chooseWylder": "Choose Wylder investigator {count} of 4 (no shared classes)"
+    },
     "abyssalTome2": {
       "placeDoom": "Place 1 doom on Abyssal Tome",
       "doNotPlaceDoom": "Do not place doom on Abyssal Tome"

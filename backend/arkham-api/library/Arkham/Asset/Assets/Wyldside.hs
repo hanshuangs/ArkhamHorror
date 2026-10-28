@@ -15,8 +15,7 @@ wyldside = asset Wyldside Cards.wyldside
 instance HasAbilities Wyldside where
   getAbilities (Wyldside a) =
     [ restrictedAbility a 1 ControlsThis
-        $ FastAbility
-        $ ExhaustCost (toTarget a)
+        $ actionAbilityWithCost (ExhaustCost $ toTarget a)
     ]
 
 instance RunMessage Wyldside where

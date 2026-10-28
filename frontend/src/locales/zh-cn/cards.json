@@ -1,5 +1,8 @@
 {
   "label": {
+    "fenris": {
+      "chooseWylder": "选择第 {count}/4 位 Wylder 调查员（职业不能重叠）"
+    },
     "acridMiasma": {
       "hunter": "结算场中每个敌人的猎手关键字"
     },

@@ -21,6 +21,7 @@ import Asset from '@/arkham/components/Asset.vue';
 import EventView from '@/arkham/components/Event.vue';
 import Skill from '@/arkham/components/Skill.vue';
 import HandCard from '@/arkham/components/HandCard.vue';
+import CardView from '@/arkham/components/Card.vue';
 import CardRow from '@/arkham/components/CardRow.vue';
 import CardsUnderIndicator from '@/arkham/components/CardsUnderIndicator.vue';
 import CustomCardPicker from '@/arkham/components/debug/CustomCardPicker.vue';
@@ -384,7 +385,18 @@ const topOfHunchDeck = computed(() => {
   return null
 })
 
+const wylderDeck = computed(() =>
+  props.investigator.decks.find(([key]) => key === 'WylderDeck')?.[1] ?? []
+)
+const topOfWylderDeck = computed(() => wylderDeck.value[0] ?? null)
+
+const showWylderDeck = (event: Event) => {
+  event.preventDefault()
+  doShowCards(event, wylderDeck, t('investigators.fenris.wylderDeck'), false, true)
+}
+
 const viewingDiscard = ref(false)
+const showCardsRevealed = ref(false)
 
 const id = computed(() => props.investigator.id)
 
@@ -456,15 +468,17 @@ const handSizeClasses = computed(() => ({
   'hand-size-alert': (props.investigator.handSize ?? 8) < totalHandSize.value,
 }))
 
-const doShowCards = (event: Event, cards: ComputedRef<ArkhamCard.Card[]>, title: string, isDiscards: boolean) => {
+const doShowCards = (event: Event, cards: ComputedRef<ArkhamCard.Card[]>, title: string, isDiscards: boolean, revealed = false) => {
   cardRowTitle.value = title
   showCards.ref = cards
   viewingDiscard.value = isDiscards
+  showCardsRevealed.value = revealed
 }
 
 const hideCards = () => {
   showCards.ref = noCards
   viewingDiscard.value = false
+  showCardsRevealed.value = false
 }
 
 const committedIdSet = computed(() => new Set((props.game.skillTest?.committedCards ?? []).map(c => toCardContents(c).id)))
@@ -1270,6 +1284,22 @@ function closeHand() {
         <button v-if="debug.active" @click="showHunchDeck">{{ $t('player.viewDeck') }}</button>
       </div>
 
+      <div v-if="topOfWylderDeck" class="wylder-deck">
+        <span class="deck-label">{{ $t('investigators.fenris.wylderDeck') }}</span>
+        <div class="top-of-deck">
+          <CardView
+            :card="topOfWylderDeck"
+            :game="game"
+            :playerId="playerId"
+            :revealed="true"
+            :allowInteractions="false"
+            :allowAbilityButtons="false"
+          />
+          <span class="deck-size">{{ wylderDeck.length }}</span>
+        </div>
+        <button type="button" @click="showWylderDeck">{{ $t('player.viewDeck') }}</button>
+      </div>
+
       <div class="investigator-and-deck">
         <Investigator
           :game="game"
@@ -1475,6 +1505,7 @@ function closeHand() {
       :playerId="playerId"
       :cards="showCards.ref"
       :isDiscards="viewingDiscard"
+      :revealed="showCardsRevealed"
       :title="cardRowTitle"
       @choose="$emit('choose', $event)"
       @close="hideCards"
@@ -1767,7 +1798,8 @@ function closeHand() {
   background: hsla(255 100% 100% / 0.5)
 }
 
-.hunch-deck {
+.hunch-deck,
+.wylder-deck {
   display: flex;
   flex-direction: column;
   .top-of-deck {

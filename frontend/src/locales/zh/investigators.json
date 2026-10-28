@@ -8,6 +8,9 @@
   "rexMurphy": {
     "name": "雷克斯·墨菲"
   },
+  "fenris": {
+    "wylderDeck": "Wylder 牌堆"
+  },
   "skillTestOptions": {
     "automaticallyFailToDraw3": "本次技能检定自动失败,并抽 3 张牌",
     "resolveNormally": "正常结算"
