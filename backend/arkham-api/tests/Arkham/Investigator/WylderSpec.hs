@@ -43,7 +43,7 @@ spec = describe "Fenris' Wylder investigator choices" do
 
   it "excludes Fenris, nonstarting forms, and campaign-only investigators" do
     let unavailable :: [CardCode]
-        unavailable = ["99100", "10016a", "10016b", "11068b", "04244", "05046", "10661"]
+        unavailable = ["net12", "10016a", "10016b", "11068b", "04244", "05046", "10661"]
     for_ unavailable \code -> do
       map cdCardCode (wylderCandidates []) `shouldNotContain` [code]
       validWylderSelection [code, "01001", "01002", "01003"] `shouldBe` False

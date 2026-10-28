@@ -824,7 +824,7 @@ lolaHayesParallel =
 
 fenris :: CardDef
 fenris =
-  investigator "99100" ("Fenris" <:> "The DJ") Neutral [Drifter, Performer, HomebrewTrait "GMod"]
+  investigator "net12" ("Fenris" <:> "The DJ") Neutral [Drifter, Performer, HomebrewTrait "GMod"]
 
 tommyMuldoon2 :: CardDef
 tommyMuldoon2 =

@@ -247,6 +247,35 @@ test('an official card code is left exactly as it was', async (t) => {
   assert.deepEqual(deck.slots, { '01006': 2, '60505': 1, c01007: 1 })
 })
 
+test('a native Fenris export keeps its investigator, signatures and embedded card metadata', async (t) => {
+  const { normalizeArkhamBuildDeckCodes } = await load(t)
+  const input = {
+    investigator_code: 'net12',
+    slots: { twoa10002733: 1, twoa10002734: 1, '60505': 2 },
+    meta: JSON.stringify({ fan_made_content: { cards: {
+      net12: { code: 'net12' }, twoa10002733: { code: 'twoa10002733' },
+    } } }),
+  }
+  assert.deepEqual(normalizeArkhamBuildDeckCodes(input), input)
+})
+
+test('legacy Fenris decks migrate to native codes without mutating the input', async (t) => {
+  const { normalizeArkhamBuildDeckCodes } = await load(t)
+  const input = {
+    investigator_code: '99100',
+    slots: { '99101': 1, '99102': 1, '60505': 2 },
+    sideSlots: { c99101: 1 },
+    meta: JSON.stringify({ alternate_front: 'c99100', faction_selected: 'guardian' }),
+  }
+  const before = structuredClone(input)
+  const deck = normalizeArkhamBuildDeckCodes(input)
+  assert.equal(deck.investigator_code, 'net12')
+  assert.deepEqual(deck.slots, { twoa10002733: 1, twoa10002734: 1, '60505': 2 })
+  assert.deepEqual(deck.sideSlots, { twoa10002733: 1 })
+  assert.deepEqual(JSON.parse(deck.meta), { alternate_front: 'net12', faction_selected: 'guardian' })
+  assert.deepEqual(input, before)
+})
+
 test('an alternate front is rewritten inside the meta string', async (t) => {
   const { arkhamBuildCardToCustomCard, normalizeArkhamBuildDeckCodes } = await load(t)
 

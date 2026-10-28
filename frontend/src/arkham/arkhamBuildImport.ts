@@ -398,8 +398,14 @@ export async function attachInvestigatorPortraits(cards: CustomCard[]): Promise<
 
 /* Which ids get rewritten is `isArkhamBuildCardId`, which sits beside the
  * derivation itself so the two cannot drift apart. */
+const LEGACY_FENRIS_CODES: Record<string, string> = {
+  '99100': 'net12',
+  '99101': 'twoa10002733',
+  '99102': 'twoa10002734',
+}
 const translateCode = (code: string): string =>
-  isArkhamBuildCardId(code) ? arkhamBuildCustomCardCode(code) : code
+  LEGACY_FENRIS_CODES[code.replace(/^c/, '')] ??
+  (isArkhamBuildCardId(code) ? arkhamBuildCustomCardCode(code) : code)
 
 const translateSlots = (slots?: Record<string, number>): Record<string, number> | undefined =>
   slots

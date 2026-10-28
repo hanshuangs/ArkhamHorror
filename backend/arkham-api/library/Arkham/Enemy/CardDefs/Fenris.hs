@@ -8,8 +8,8 @@ import Arkham.Keyword qualified as Keyword
 -- normal way for a weakness enemy (engaged with the investigator).
 ireress :: CardDef
 ireress =
-  signature "99100"
-    $ (weakness "99102" "Ireress")
+  signature "net12"
+    $ (weakness "twoa10002734" "Ireress")
       { cdHealthDamage = healthDamage 1
       , cdSanityDamage = sanityDamage 1
       , cdFight = fight 3

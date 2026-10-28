@@ -1,6 +1,8 @@
 module Arkham.Card.CardCodeSpec (spec) where
 
 import Arkham.Card.CardCode
+import Data.Aeson (eitherDecode, encode)
+import Data.Map.Strict qualified as Map
 import Test.Hspec
 
 spec :: Spec
@@ -28,3 +30,15 @@ spec = describe "CardCode equality" do
     CardCode ":dark-matter:063da" `shouldNotBe` CardCode ":dark-matter:063cb"
     CardCode ":dark-matter:063aa" `shouldNotBe` CardCode ":dark-matter:063bb"
     CardCode ":dark-matter:063da" `shouldNotBe` CardCode ":dark-matter:063aa"
+
+  it "loads legacy Fenris card values using the native arkham.build codes" do
+    eitherDecode "[\"99100\",\"c99100\",\"99101\",\"c99101\",\"99102\",\"c99102\"]"
+      `shouldBe` (Right ["net12", "net12", "twoa10002733", "twoa10002733", "twoa10002734", "twoa10002734"] :: Either String [CardCode])
+
+  it "loads legacy Fenris object keys using the same native codes as card values" do
+    eitherDecode "{\"c99100\":1,\"99101\":2,\"c99102\":3}"
+      `shouldBe` (Right (Map.fromList [("net12", 1), ("twoa10002733", 2), ("twoa10002734", 3)]) :: Either String (Map.Map CardCode Int))
+
+  it "round trips native Fenris codes without changing official or other custom codes" do
+    let codes = ["net12", "twoa10002733", "twoa10002734", "01001", "*custom0"] :: [CardCode]
+    eitherDecode (encode codes) `shouldBe` Right codes

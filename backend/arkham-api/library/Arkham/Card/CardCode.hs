@@ -84,15 +84,25 @@ instance Eq CardCodeExact where
 instance ToJSON CardCode where
   toJSON = toJSON . T.cons 'c' . unCardCode
 
+-- Fenris originally shipped with local numeric codes. Normalize both card
+-- values and object keys while loading old decks/saves, keeping investigator
+-- references consistent with the arkham.build codes now used by the registry.
+normalizeLegacyFenrisCode :: Text -> Text
+normalizeLegacyFenrisCode = \case
+  "99100" -> "net12"
+  "99101" -> "twoa10002733"
+  "99102" -> "twoa10002734"
+  code -> code
+
 instance FromJSON CardCode where
   parseJSON =
-    withText "CardCode" $ \t -> pure $ CardCode $ T.dropWhile (== 'c') t
+    withText "CardCode" $ \t -> pure $ CardCode $ normalizeLegacyFenrisCode $ T.dropWhile (== 'c') t
 
 instance ToJSONKey CardCode where
   toJSONKey = toJSONKeyText (T.cons 'c' . unCardCode)
 
 instance FromJSONKey CardCode where
-  fromJSONKey = CardCode . T.dropWhile (== 'c') <$> fromJSONKey
+  fromJSONKey = CardCode . normalizeLegacyFenrisCode . T.dropWhile (== 'c') <$> fromJSONKey
 
 isCardCode :: (HasCardCode a, HasCardCode b) => a -> b -> Bool
 isCardCode a b = toCardCode a == toCardCode b
