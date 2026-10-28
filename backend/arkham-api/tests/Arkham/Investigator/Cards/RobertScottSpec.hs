@@ -1,17 +1,20 @@
 module Arkham.Investigator.Cards.RobertScottSpec (spec) where
 
 import Arkham.Ability.Types (abilityIndex)
+import Arkham.Event qualified as RuntimeEvents
 import Arkham.Event.Cards qualified as Events
 import Arkham.Helpers.Cost (getSpendableResources)
 import Arkham.Helpers.Xp (getXpWithBonus)
 import Arkham.Helpers.Scenario (getVictoryDisplay)
 import Arkham.Investigator.Cards qualified as Investigators
+import Arkham.Investigator qualified as RuntimeInvestigators
 import Arkham.Investigator.RobertScott
 import Arkham.Matcher.Skill (SkillMatcher (SkillWithId))
 import Arkham.Placement (Placement (Limbo))
 import Arkham.PlayerCard (allPlayerCards)
 import Arkham.Skill.Cards qualified as Skills
 import Arkham.Treachery.CardDefs.RobertScott qualified as Treacheries
+import Arkham.Treachery qualified as RuntimeTreacheries
 import Data.Map.Strict qualified as Map
 import TestImport qualified as TI
 import TestImport.New
@@ -19,6 +22,10 @@ import TestImport.New
 spec :: Spec
 spec = describe "Robert Scott" do
   it "registers all three signature cards under their native arkham.build IDs" do
+    Map.member "a5a24167-f20e-40b9-92ed-551374516701" RuntimeInvestigators.allInvestigators `TI.shouldBe` True
+    Map.member "50571516-0d4a-46da-b8c3-6ba26b2baaec" RuntimeEvents.allEvents `TI.shouldBe` True
+    Map.member "6c392683-6c14-4c45-a5d6-25d58d433433" RuntimeEvents.allEvents `TI.shouldBe` True
+    Map.member "675f833b-dd06-4784-b785-c9f3762fbef2" RuntimeTreacheries.allTreacheries `TI.shouldBe` True
     Map.lookup "50571516-0d4a-46da-b8c3-6ba26b2baaec" allPlayerCards `TI.shouldBe` Just Events.jetStrike
     Map.lookup "6c392683-6c14-4c45-a5d6-25d58d433433" allPlayerCards `TI.shouldBe` Just Events.putOutTheFire
     Map.lookup "675f833b-dd06-4784-b785-c9f3762fbef2" allPlayerCards `TI.shouldBe` Just Treacheries.cantSaveThemAll

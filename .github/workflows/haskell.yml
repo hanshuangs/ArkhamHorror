@@ -58,6 +58,8 @@ jobs:
           backend/.stack-work
           backend/arkham-api/.stack-work
           backend/cards-discover/.stack-work
+          backend/ah3e/.stack-work
+          backend/validate/.stack-work
         key: ${{ runner.os }}-project-tests-ghc-${{ matrix.ghc }}-${{ hashFiles('backend/**/*.hs', 'backend/**/*.cabal', 'backend/**/package.yaml', 'backend/stack.yaml', 'backend/stack.yaml.lock') }}
         restore-keys: |
           ${{ runner.os }}-project-tests-ghc-${{ matrix.ghc }}-
@@ -73,4 +75,6 @@ jobs:
           backend/.stack-work
           backend/arkham-api/.stack-work
           backend/cards-discover/.stack-work
+          backend/ah3e/.stack-work
+          backend/validate/.stack-work
         key: ${{ steps.project-cache.outputs.cache-primary-key }}

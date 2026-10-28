@@ -871,4 +871,6 @@ allEvents =
       , -- Promo
         -- The Dirge of Reason
         SomeEventCard mysteriesRemain
+      , SomeEventCard jetStrike
+      , SomeEventCard putOutTheFire
       ]

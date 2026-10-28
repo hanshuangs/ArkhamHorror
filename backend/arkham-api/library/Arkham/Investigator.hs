@@ -174,6 +174,7 @@ allInvestigators =
       , SomeInvestigatorCard jennyBarnesParallel
       , SomeInvestigatorCard lolaHayesParallel
       , SomeInvestigatorCard fenris
+      , SomeInvestigatorCard robertScott
       ]
 
 becomeYithian :: Investigator -> Investigator
