@@ -1,11 +1,14 @@
 module Arkham.Investigator.Cards.RobertScottSpec (spec) where
 
+import Arkham.Ability.Types (abilityIndex)
 import Arkham.Event.Cards qualified as Events
 import Arkham.Helpers.Cost (getSpendableResources)
 import Arkham.Helpers.Xp (getXpWithBonus)
 import Arkham.Helpers.Scenario (getVictoryDisplay)
 import Arkham.Investigator.Cards qualified as Investigators
 import Arkham.Investigator.RobertScott
+import Arkham.Matcher.Skill (SkillMatcher (SkillWithId))
+import Arkham.Placement (Placement (Limbo))
 import Arkham.PlayerCard (allPlayerCards)
 import Arkham.Skill.Cards qualified as Skills
 import Arkham.Treachery.CardDefs.RobertScott qualified as Treacheries
