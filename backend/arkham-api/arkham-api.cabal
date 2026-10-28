@@ -3504,6 +3504,7 @@ library
       Arkham.Event.Cards.Parallel
       Arkham.Event.Cards.Promo
       Arkham.Event.Cards.ReturnTo
+      Arkham.Event.Cards.RobertScott
       Arkham.Event.Cards.Standalone
       Arkham.Event.Cards.Starter
       Arkham.Event.Cards.TheCircleUndone
@@ -3771,6 +3772,7 @@ library
       Arkham.Event.Events.IveHadWorse2
       Arkham.Event.Events.IveHadWorse4
       Arkham.Event.Events.JoinTheCaravan1
+      Arkham.Event.Events.JetStrike
       Arkham.Event.Events.JuryRig
       Arkham.Event.Events.KeepFaith
       Arkham.Event.Events.KeepFaith2
@@ -3876,6 +3878,7 @@ library
       Arkham.Event.Events.Psychoanalysis3
       Arkham.Event.Events.PushedToTheLimit
       Arkham.Event.Events.PutrescentRot
+      Arkham.Event.Events.PutOutTheFire
       Arkham.Event.Events.QuantumFlux
       Arkham.Event.Events.QuantumParadox
       Arkham.Event.Events.QuickExit
@@ -5171,6 +5174,7 @@ library
       Arkham.Investigator.Cards.RexMurphy
       Arkham.Investigator.Cards.RexMurphyParallel
       Arkham.Investigator.Cards.RitaYoung
+      Arkham.Investigator.Cards.RobertScott
       Arkham.Investigator.Cards.RolandBanks
       Arkham.Investigator.Cards.RolandBanksParallel
       Arkham.Investigator.Cards.SefinaRousseau
@@ -5202,6 +5206,7 @@ library
       Arkham.Investigator.Investigators
       Arkham.Investigator.Projection
       Arkham.Investigator.Runner
+      Arkham.Investigator.RobertScott
       Arkham.Investigator.Runner.Action
       Arkham.Investigator.Runner.Card
       Arkham.Investigator.Runner.Damage
@@ -7596,6 +7601,7 @@ library
       Arkham.Treachery.CardDefs.NightOfTheZealot.TheMidnightMasks
       Arkham.Treachery.CardDefs.Promo
       Arkham.Treachery.CardDefs.RelicsOfThePast
+      Arkham.Treachery.CardDefs.RobertScott
       Arkham.Treachery.CardDefs.ReturnTo
       Arkham.Treachery.CardDefs.ReturnToNightOfTheZealot.ReturnToTheDevourerBelow
       Arkham.Treachery.CardDefs.ReturnToNightOfTheZealot.ReturnToTheGathering
@@ -7843,6 +7849,7 @@ library
       Arkham.Treachery.Cards.CalledByTheMists
       Arkham.Treachery.Cards.CalledToGuinee
       Arkham.Treachery.Cards.CallOfTheUnknown
+      Arkham.Treachery.Cards.CantSaveThemAll
       Arkham.Treachery.Cards.CarnevaleOfHorrors.Abduction
       Arkham.Treachery.Cards.CarnevaleOfHorrors.AcridMiasma
       Arkham.Treachery.Cards.CarnevaleOfHorrors.ChaosInTheWater
@@ -9122,6 +9129,7 @@ test-suite spec
       Arkham.Investigator.Cards.PatriceHathawaySpec
       Arkham.Investigator.Cards.RexMurphySpec
       Arkham.Investigator.Cards.RolandBanksSpec
+      Arkham.Investigator.Cards.RobertScottSpec
       Arkham.Investigator.Cards.SkidsOTooleSpec
       Arkham.Investigator.Cards.TommyMuldoonSpec
       Arkham.Investigator.Cards.TonyMorganSpec

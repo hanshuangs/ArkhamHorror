@@ -83,14 +83,16 @@ jobs:
           key: arkham-tools-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('offline/scripts/01-check-project-deps.sh') }}
 
       - name: Restore backend build cache
-        uses: actions/cache@v4
+        id: backend-cache
+        uses: actions/cache/restore@v4
         with:
           path: |
             offline/_deps/stack-root/
             offline/_deps/stack-work/
             offline/_deps/stack-work-sub/
-          key: arkham-stack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('backend/stack.yaml', 'backend/stack.yaml.lock') }}
+          key: arkham-stack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('backend/stack.yaml', 'backend/stack.yaml.lock') }}-${{ hashFiles('backend/**/*.hs', 'backend/**/*.cabal', 'backend/**/package.yaml', 'offline/scripts/04-build-backend.sh') }}
           restore-keys: |
+            arkham-stack-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('backend/stack.yaml', 'backend/stack.yaml.lock') }}-
             arkham-stack-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Restore frontend build cache
@@ -121,6 +123,16 @@ jobs:
       - name: '[4/5] Build backend (Haskell / Stack)'
         working-directory: offline
         run: bash scripts/04-build-backend.sh
+
+      - name: Save backend build cache
+        if: ${{ always() && !cancelled() && steps.backend-cache.outputs.cache-primary-key != '' && steps.backend-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            offline/_deps/stack-root/
+            offline/_deps/stack-work/
+            offline/_deps/stack-work-sub/
+          key: ${{ steps.backend-cache.outputs.cache-primary-key }}
 
       - name: '[5/5] Package distribution'
         working-directory: offline

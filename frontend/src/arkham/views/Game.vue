@@ -2935,7 +2935,7 @@ onUnmounted(() => {
             <div class="debug-playability-content">
               <img
                 class="debug-card-image"
-                :src="cardImg(playabilityInfo.cardCode.replace('c', ''))"
+                :src="cardImg(playabilityInfo.cardCode.replace(/^c/, ''))"
               />
               <ul class="playability-checks">
                 <li
