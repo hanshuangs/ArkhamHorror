@@ -208,17 +208,23 @@ handleSpendResources a@InvestigatorAttrs {..} iid n msg = do
         pure a
   mods <- getModifiers a
   resourcePools <- forToSnd [aid | AsIfResourcePool aid <- mods] (field AssetResources)
-  let totalPoolResources = sum (map snd resourcePools)
-  if totalPoolResources == 0
+  sharedPools <- forToSnd (nub [donor | SharedResourcePool donor <- mods, donor /= iid]) (field InvestigatorResources)
+  let totalPoolResources = sum (map snd resourcePools) + sum (map snd sharedPools)
+  if n <= 0 || totalPoolResources == 0
     then defaultFlow
     else do
       player <- getPlayer iid
+      beforeSelf <- checkWindows [mkWhen (Window.SpendsResources iid 1)]
+      sharedChoices <- for sharedPools \(donor, k) -> do
+        beforeDonor <- checkWindows [mkWhen (Window.SpendsResources donor 1)]
+        pure $ replicate k (ResourceLabel donor [beforeDonor, Do (SpendResources donor 1)])
       push
         $ chooseOrRunN player n
         $ concatMap
           (\(aid, k) -> replicate k (targetLabel aid [RemoveResources (toSource a) (toTarget aid) 1]))
           resourcePools
-        <> replicate a.resources (ResourceLabel iid [Do (SpendResources iid 1)])
+        <> replicate a.resources (ResourceLabel iid [beforeSelf, Do (SpendResources iid 1)])
+        <> concat sharedChoices
       pure a
 
 handleDoSpendResources a@InvestigatorAttrs {..} iid n = do

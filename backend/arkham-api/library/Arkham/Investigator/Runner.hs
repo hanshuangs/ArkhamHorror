@@ -315,11 +315,12 @@ getWindowSkippable
     modifiers <- getModifiers iid
 
     canHelpPay <-
-      iidsWithModifiers & filterM \(_iid', modifiers') -> do
+      iidsWithModifiers & filterM \(iid', modifiers') -> do
         modifiers' & anyM \case
           CanSpendResourcesOnCardFromInvestigator iMatcher cMatcher -> runValidT do
             guard $ cardMatch card cMatcher
             guard $ CannotAffectOtherPlayersWithPlayerEffectsExceptDamage `notElem` modifiers'
+            liftGuardM $ withoutModifier iid (SharedResourcePool iid')
             liftGuardM $ iid <=~> iMatcher
           _ -> pure False
 
@@ -1089,7 +1090,7 @@ runInvestigatorMessage msg a@InvestigatorAttrs {..} = runQueueT $ case msg of
   Discarded (AssetTarget aid) _ (EncounterCard _) -> handleDiscardedV2 a aid
   Discarded (EventTarget aid) _ _ -> handleDiscardedV3 a aid
   Exile (CardIdTarget cid) -> do
-    for_ (find ((== cid) . toCardId) investigatorHand) \card -> do
+    for_ (find ((== cid) . toCardId) (investigatorHand <> map toCard investigatorDiscard)) \card -> do
       push $ Exiled (CardIdTarget cid) card
     pure a
   Exiled (AssetTarget aid) _ -> do
@@ -1098,7 +1099,7 @@ runInvestigatorMessage msg a@InvestigatorAttrs {..} = runQueueT $ case msg of
   Exiled (EventTarget aid) _ -> do
     pushWhen (providedSlot a aid) $ RefillSlots a.id []
     pure a
-  Exiled (CardIdTarget cid) _ -> pure $ a & handL %~ filter ((/= cid) . toCardId)
+  Exiled (CardIdTarget cid) _ -> pure $ a & handL %~ filter ((/= cid) . toCardId) & discardL %~ filter ((/= cid) . toCardId)
   RemoveFromGame (AssetTarget aid) -> do
     pushWhen (providedSlot a aid) $ RefillSlots a.id []
     pure $ a & (slotsL %~ removeFromSlots aid)

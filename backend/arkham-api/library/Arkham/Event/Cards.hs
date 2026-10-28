@@ -8,6 +8,7 @@ import Arkham.Event.Cards.EdgeOfTheEarth as X
 import Arkham.Event.Cards.NightOfTheZealot as X
 import Arkham.Event.Cards.Parallel as X
 import Arkham.Event.Cards.Promo as X
+import Arkham.Event.Cards.RobertScott as X
 import Arkham.Event.Cards.ReturnTo as X
 import Arkham.Event.Cards.Standalone as X
 import Arkham.Event.Cards.Starter as X
@@ -32,6 +33,8 @@ allPlayerEventCards =
     $ concatMap
       toCardCodePairs
       [ aChanceEncounter
+      , jetStrike
+      , putOutTheFire
       , aChanceEncounter2
       , aGlimmerOfHope
       , aGlimmerOfHope2

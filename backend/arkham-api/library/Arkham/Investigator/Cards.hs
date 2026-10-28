@@ -118,6 +118,7 @@ allInvestigatorCards =
       , lolaHayesParallel
       , miguelDeLaCruz
       , fenris
+      , robertScott
       ]
 
 allEncounterInvestigatorCards :: Map CardCode CardDef
@@ -825,6 +826,11 @@ lolaHayesParallel =
 fenris :: CardDef
 fenris =
   investigator "net12" ("Fenris" <:> "The DJ") Neutral [Drifter, Performer, HomebrewTrait "GMod"]
+
+robertScott :: CardDef
+robertScott =
+  (investigator "a5a24167-f20e-40b9-92ed-551374516701" ("Robert Scott" <:> "The Firefighter") Guardian [Civic, Warden])
+    {cdClassSymbols = setFromList [Guardian, Survivor]}
 
 tommyMuldoon2 :: CardDef
 tommyMuldoon2 =

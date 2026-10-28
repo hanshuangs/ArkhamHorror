@@ -321,6 +321,11 @@ payCostFrom msg c iid skipAdditionalCosts mCostSource cost = do
       push $ chooseOne player $ targetLabels cards $ only . pay . ChosenCardCost . toCardId
       pure c
     ChosenCardCost cid -> withPayment $ ChosenCardPayment cid
+    ExileFromCost mtch -> do
+      cards <- select mtch
+      push $ chooseOne player $ targetLabels cards \card ->
+        [pay (ChosenCardCost $ toCardId card), pay (ExileCost $ toTarget card)]
+      pure c
     {- Revealed before it is paid, because that is the order the card reads in:
        the card becomes public, and only then is it what you spent. -}
     RevealChosenCardCost mtch -> do
@@ -1015,6 +1020,7 @@ payCostFrom msg c iid skipAdditionalCosts mCostSource cost = do
                     [ elem iid <$> select iMatcher
                     , pure $ cardMatch card cMatcher
                     , pure $ iid /= iid'
+                      , withoutModifier iid (SharedResourcePool iid')
                     ]
                 _ -> pure False
 
@@ -1040,7 +1046,7 @@ payCostFrom msg c iid skipAdditionalCosts mCostSource cost = do
             else do
               iidsWithResources <-
                 forMaybeM (iid : map fst canHelpPay) \iid' -> do
-                  resources <- getSpendableResources iid'
+                  resources <- if iid' == iid then getSpendableResources iid' else getOwnSpendableResources iid'
                   name <- toTitle <$> field InvestigatorName iid'
                   pure $ guard (resources > 0) $> (iid', name, resources)
 
@@ -1793,8 +1799,8 @@ instance RunMessage ActiveCost where
             sum <$> for modifiers \case
               CanSpendResourcesOnCardFromInvestigator iMatcher cMatcher -> do
                 canGive <-
-                  andM [pure $ cardMatch card cMatcher, pure $ iid /= iid', elem iid <$> select iMatcher]
-                if canGive then getSpendableResources iid' else pure 0
+                  andM [pure $ cardMatch card cMatcher, pure $ iid /= iid', elem iid <$> select iMatcher, withoutModifier iid (SharedResourcePool iid'), withoutModifier iid' CannotAffectOtherPlayersWithPlayerEffectsExceptDamage]
+                if canGive then getOwnSpendableResources iid' else pure 0
               CanSpendUsesAsResourceOnCardFromInvestigator assetId uType iMatcher cMatcher -> do
                 canContribute <-
                   andM

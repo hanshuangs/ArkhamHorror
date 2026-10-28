@@ -403,9 +403,16 @@ const LEGACY_FENRIS_CODES: Record<string, string> = {
   '99101': 'twoa10002733',
   '99102': 'twoa10002734',
 }
+const BUILTIN_ARKHAM_BUILD_CODES = new Set([
+  'a5a24167-f20e-40b9-92ed-551374516701',
+  '50571516-0d4a-46da-b8c3-6ba26b2baaec',
+  '6c392683-6c14-4c45-a5d6-25d58d433433',
+  '675f833b-dd06-4784-b785-c9f3762fbef2',
+])
 const translateCode = (code: string): string =>
   LEGACY_FENRIS_CODES[code.replace(/^c/, '')] ??
-  (isArkhamBuildCardId(code) ? arkhamBuildCustomCardCode(code) : code)
+  (BUILTIN_ARKHAM_BUILD_CODES.has(code.replace(/^c/, '')) ? code.replace(/^c/, '') :
+    (isArkhamBuildCardId(code) ? arkhamBuildCustomCardCode(code) : code))
 
 const translateSlots = (slots?: Record<string, number>): Record<string, number> | undefined =>
   slots

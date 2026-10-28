@@ -355,6 +355,7 @@ normalizeArkhamBuildDeckCodes decklist =
     }
  where
   translateCardCode cc@(CardCode t)
+    | isBuiltinArkhamBuildCardCode cc = cc
     | isArkhamBuildCardId t = arkhamBuildCustomCardCode t
     | otherwise = cc
 
@@ -366,7 +367,7 @@ normalizeArkhamBuildDeckCodes decklist =
     m <- decode @(Map Text Json.Value) (BSL.fromStrict $ encodeUtf8 raw)
     Json.String front <- Map.lookup "alternate_front" m
     guard $ isArkhamBuildCardId front
-    let code = Json.String $ unCardCode $ arkhamBuildCustomCardCode front
+    let code = Json.String $ unCardCode $ translateCardCode (CardCode front)
     pure $ decodeUtf8 $ BSL.toStrict $ encode $ Map.insert "alternate_front" code m
 
 getDeckList :: MonadIO m => Text -> m (Either String ArkhamDBDecklist)

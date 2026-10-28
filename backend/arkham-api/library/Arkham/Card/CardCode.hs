@@ -9,6 +9,16 @@ newtype CardCode = CardCode {unCardCode :: Text}
   deriving stock Data
   deriving newtype (Show, Ord, Read, Hashable, IsString)
 
+-- These arkham.build cards have engine implementations; keep their native ids
+-- rather than translating them into definitions for the custom-card editor.
+isBuiltinArkhamBuildCardCode :: CardCode -> Bool
+isBuiltinArkhamBuildCardCode code = code `elem`
+  [ "a5a24167-f20e-40b9-92ed-551374516701"
+  , "50571516-0d4a-46da-b8c3-6ba26b2baaec"
+  , "6c392683-6c14-4c45-a5d6-25d58d433433"
+  , "675f833b-dd06-4784-b785-c9f3762fbef2"
+  ]
+
 -- these card codes get a `b` added after the normal designator
 exceptionCardCodes :: [Text]
 exceptionCardCodes = ["03047a", "03047b", "03047c", "03279a", "03279b"]

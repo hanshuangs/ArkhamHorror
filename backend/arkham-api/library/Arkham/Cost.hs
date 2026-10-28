@@ -135,6 +135,7 @@ data Cost
   | ChooseEnemyCostAndMaybeGroupFieldClueCost LocationMatcher EnemyMatcher (Field Enemy (Maybe Int))
   | ChosenEnemyCost EnemyId
   | ChooseExtendedCardCost ExtendedCardMatcher
+  | ExileFromCost ExtendedCardMatcher
   | {- | "Reveal a card from your hand": choose a card the matcher accepts and
     reveal it, paying it as the card chosen.
 

@@ -237,6 +237,11 @@ getCanAffordCost_ !iid !(toSource -> source) !actions !windows' !canModify cost_
           clueCount <- field fld enemy
           pure $ maybe False (clues >=) clueCount
       ChooseExtendedCardCost mtcr -> selectAny mtcr
+      ExileFromCost mtcr -> andM
+        [ iid <=~> Matcher.InvestigatorCanRemoveCardsFromDeck
+        , selectAny mtcr
+        , if usesDiscard mtcr then withoutModifier iid CardsCannotLeaveYourDiscardPile else pure True
+        ]
       -- Revealing is something the investigator does, and a card can forbid it.
       RevealChosenCardCost mtcr -> andM [can.reveal.cards iid, selectAny mtcr]
       {- Which card's traits these will be is not known until the cost that chooses
@@ -740,10 +745,24 @@ getCanAffordCost_ !iid !(toSource -> source) !actions !windows' !canModify cost_
 
 getSpendableResources :: HasGame m => InvestigatorId -> m Int
 getSpendableResources iid = do
+  ownResources <- getOwnSpendableResources iid
+  mods <- getModifiers iid
+  sharedResources <- sum <$> traverse (field InvestigatorResources) (nub [donor | SharedResourcePool donor <- mods, donor /= iid])
+  pure $ ownResources + sharedResources
+
+getOwnSpendableResources :: HasGame m => InvestigatorId -> m Int
+getOwnSpendableResources iid = do
   mods <- getModifiers iid
   let extraResources = sum [x | ExtraResources x <- mods]
   pooledResources <- sum <$> traverse (field AssetResources) [aid | AsIfResourcePool aid <- mods]
   fieldMap InvestigatorResources (+ (pooledResources + extraResources)) iid
+
+usesDiscard :: Matcher.ExtendedCardMatcher -> Bool
+usesDiscard = \case
+  Matcher.InDiscardOf _ -> True
+  Matcher.ExtendedCardMatches xs -> any usesDiscard xs
+  Matcher.ExtendedCardWithOneOf xs -> any usesDiscard xs
+  _ -> False
 
 getSpendableClueCount :: HasGame m => [InvestigatorId] -> m Int
 getSpendableClueCount investigatorIds =

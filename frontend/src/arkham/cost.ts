@@ -189,6 +189,7 @@ export function formatCost(cost: Cost, t: Translate): string {
     case 'ReturnEventToHandCost':
       return t('label.cost.returnEventToHand')
     case 'ExileCost':
+    case 'ExileFromCost':
       return t('label.cost.exile')
     case 'SpendTokenCost':
       return t('label.cost.spendToken')

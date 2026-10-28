@@ -454,11 +454,12 @@ getPlayabilityChecksWithResources
         iids <- filter (/= iid) <$> getInvestigators
         iidsWithModifiers <- for iids \iid' -> (iid',) <$> getModifiers iid'
         canHelpPay <-
-          iidsWithModifiers & filterM \(_iid', modifiers') -> do
+          iidsWithModifiers & filterM \(iid', modifiers') -> do
             modifiers' & anyM \case
               CanSpendResourcesOnCardFromInvestigator iMatcher cMatcher -> runValidT do
                 guard $ cardMatch c cMatcher
                 guard $ CannotAffectOtherPlayersWithPlayerEffectsExceptDamage `notElem` modifiers'
+                liftGuardM $ withoutModifier iid (SharedResourcePool iid')
                 liftGuardM $ iid <=~> iMatcher
               _ -> pure False
         resourcesFromAssets <-

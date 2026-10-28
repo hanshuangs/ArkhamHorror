@@ -3,6 +3,7 @@ import test from 'node:test'
 import { fileURLToPath, URL } from 'node:url'
 
 import { createServer } from 'vite'
+import fs from 'node:fs'
 
 /* Importing an arkham.build card pool and later importing a DECK built on
 arkham.build against those same cards have to agree on one thing: the card
@@ -36,6 +37,17 @@ async function loadCustomCards(t) {
   t.after(() => server.close())
   return server.ssrLoadModule('/src/arkham/customCards.ts')
 }
+
+test('Robert Scott exports retain the four engine-implemented native IDs', async (t) => {
+  const { normalizeArkhamBuildDeckCodes } = await load(t)
+  const deck = JSON.parse(fs.readFileSync(new URL('./fixtures/robert-scott-arkham-build.json', import.meta.url), 'utf8'))
+  const normalized = normalizeArkhamBuildDeckCodes(deck)
+  assert.equal(normalized.investigator_code, 'a5a24167-f20e-40b9-92ed-551374516701')
+  assert.deepEqual(normalized.slots, deck.slots)
+  assert.deepEqual(normalizeArkhamBuildDeckCodes(normalized), normalized)
+  const alternate = normalizeArkhamBuildDeckCodes({ meta: JSON.stringify({ alternate_front: deck.investigator_code }) })
+  assert.equal(JSON.parse(alternate.meta).alternate_front, deck.investigator_code)
+})
 
 const PACK = 'Return to the Zealot'
 
