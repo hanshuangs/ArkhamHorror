@@ -1,5 +1,9 @@
 {
   "label": {
+    "robertScott": {
+      "gainResource": "Robert Scott: gain 1 resource",
+      "skipResource": "Do not gain a resource"
+    },
     "fenris": {
       "chooseWylder": "Choose Wylder investigator {count} of 4 (no shared classes)"
     },
@@ -1360,6 +1364,14 @@
     }
   },
   "tooltips": {
+    "robertScott": {
+      "exile": "Exile a level 1-5 card from your discard pile: gain resources equal to its level. (Once per round.)",
+      "experience": "Put out the Fire: earn additional experience equal to the selected card's level."
+    },
+    "cantSaveThemAll": {
+      "discard": "Spend 3 actions: discard Can't Save Them All.",
+      "exile": "Spend 1 action and exile a level 0-5 card from your hand: discard Can't Save Them All."
+    },
     "agencyBackup5": {
       "fastExhaustAgency": "{'{'}fast{'}'} Exhaust Agency Backup and deal 1 damage to it: Deal 1 damage to an enemy at your location.",
       "fastExhaustAgency2": "{'{'}fast{'}'} Exhaust Agency Backup and deal 1 horror to it: Discover 1 clue at your location."

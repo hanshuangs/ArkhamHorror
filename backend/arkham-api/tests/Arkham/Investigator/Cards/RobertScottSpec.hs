@@ -1,9 +1,9 @@
 module Arkham.Investigator.Cards.RobertScottSpec (spec) where
 
 import Arkham.Event.Cards qualified as Events
-import Arkham.Cost (totalActionCost)
 import Arkham.Helpers.Cost (getSpendableResources)
 import Arkham.Helpers.Xp (getXpWithBonus)
+import Arkham.Helpers.Scenario (getVictoryDisplay)
 import Arkham.Investigator.Cards qualified as Investigators
 import Arkham.Investigator.RobertScott
 import Arkham.PlayerCard (allPlayerCards)
@@ -99,7 +99,7 @@ spec = describe "Robert Scott" do
       runSkillTest sid self #agility 0
       self.resources `shouldReturn` 0
       applyResults
-      clickLabel "Robert Scott: gain 1 resource"
+      clickLabel "$label.cards.robertScott.gainResource"
       self.resources `shouldReturn` 1
 
   it "Jet Strike counts earlier exiles even after recovery, with a maximum of three bonus damage"
@@ -150,17 +150,42 @@ spec = describe "Robert Scott" do
         self `useAbility` ability
         self.remainingActions `shouldReturn` 0
 
+  it "Can't Save Them All causes one horror when a colocated teammate takes several damage"
+    . gameTestWith Investigators.robertScott $ \self -> do
+      other <- addInvestigator Investigators.rolandBanks
+      here <- testLocation
+      self `moveTo` here
+      other `moveTo` here
+      self `drawsCard` Treacheries.cantSaveThemAll
+      run $ assignDamage other.id (TestSource mempty) 3
+      applyAllDamage
+      useForcedAbility
+      applyAllHorror
+      self.horror `shouldReturn` 1
+      other.damage `shouldReturn` 3
+
+  it "Can't Save Them All does not trigger for Robert or for a teammate at another location"
+    . gameTestWith Investigators.robertScott $ \self -> do
+      other <- addInvestigator Investigators.rolandBanks
+      (here, there) <- testConnectedLocations id id
+      self `moveTo` here
+      other `moveTo` there
+      self `drawsCard` Treacheries.cantSaveThemAll
+      run $ assignDamage self.id (TestSource mempty) 1
+      applyAllDamage
+      run $ assignDamage other.id (TestSource mempty) 1
+      applyAllDamage
+      self.horror `shouldReturn` 0
+
   it "Can't Save Them All can exile a level-zero hand card to cost only one action"
     . gameTestWith Investigators.robertScott $ \self -> do
       card <- genMyCard self Events.emergencyCache
       withProp @"hand" [card] self
       weakness <- self `putTreacheryIntoPlay` Treacheries.cantSaveThemAll
       duringTurn self do
-        [ability] <- self `getActionsFrom` weakness
+        abilities <- self `getActionsFrom` weakness
+        [ability] <- pure $ filter ((== 3) . abilityIndex) abilities
         self `useAbility` ability
-        chooseOptionMatching "pay one action and exile a card" \case
-          CostLabel cost _ -> totalActionCost cost == 1
-          _ -> False
         chooseTarget card
         self.remainingActions `shouldReturn` 2
         self.hand `shouldReturn` []
@@ -174,3 +199,34 @@ spec = describe "Robert Scott" do
       useReaction
       getXpWithBonus 0 `shouldReturn` [(self.id, 3)]
       self `getActionsFrom` self `shouldReturn` []
+
+  it "Put out the Fire needs an available exile and can only be played as the first action"
+    . gameTestWith Investigators.robertScott $ \self -> do
+      fire <- genMyCard self Events.putOutTheFire
+      card <- genMyCard self Events.aTestOfWill1
+      here <- testLocation
+      self `moveTo` here
+      withProp @"hand" [fire, card] self
+      duringTurn self do
+        self.playableCards `shouldSatisfyM` notElem fire
+        run $ Exile (toTarget card)
+        self.playableCards `shouldSatisfyM` elem fire
+        takeResource self
+        self.playableCards `shouldSatisfyM` notElem fire
+
+  it "Put out the Fire moves both cards into the victory display and preserves the exile count"
+    . gameTestWith Investigators.robertScott $ \self -> do
+      card <- genMyCard self Events.aTestOfWill1
+      withProp @"hand" [card] self
+      run $ Exile (toTarget card)
+      self `playEvent` Events.putOutTheFire
+      chooseTarget card
+      victory <- getVictoryDisplay
+      length victory `shouldBe` 2
+      map toCardId victory `shouldSatisfy` elem (toCardId card)
+      state <- getRobertScottState self.id
+      length state.exiledCards `shouldBe` 1
+      availableExiledCards state `shouldBe` []
+      endGame
+      useReaction
+      getXpWithBonus 0 `shouldReturn` [(self.id, 1)]

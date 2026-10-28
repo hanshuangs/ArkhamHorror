@@ -7,6 +7,7 @@ import Arkham.Investigator.Types (Field (InvestigatorMeta))
 import Arkham.Matcher
 import Arkham.Prelude
 import Arkham.Projection
+import Arkham.Target
 
 -- History and the remaining exiled cards are deliberately separate: putting a
 -- card in the victory display must not reduce Jet Strike's damage bonus.
@@ -16,12 +17,13 @@ data RobertScottState = RobertScottState
   , elderSignPending :: Bool
   , fireVictoryCard :: Maybe (CardId, Int)
   , fireRewarded :: Bool
+  , pendingExiles :: [Target]
   }
   deriving stock (Show, Eq, Generic, Data)
   deriving anyclass (ToJSON, FromJSON)
 
 emptyRobertScottState :: RobertScottState
-emptyRobertScottState = RobertScottState [] [] False Nothing False
+emptyRobertScottState = RobertScottState [] [] False Nothing False []
 
 robertScottState :: Value -> RobertScottState
 robertScottState = toResultDefault emptyRobertScottState

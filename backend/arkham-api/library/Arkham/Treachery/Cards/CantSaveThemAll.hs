@@ -20,9 +20,10 @@ instance HasAbilities CantSaveThemAll where
           [ InvestigatorTakeDamage #after (affectsOthers $ colocatedWithMatch You <> not_ You) AnySource
           , InvestigatorTakeHorror #after (affectsOthers $ colocatedWithMatch You <> not_ You) AnySource
           ]
-    , restricted attrs 2 (InThreatAreaOf You)
-        $ ActionAbility [] Nothing
-        $ OrCost [ActionCost 3, ActionCost 1 <> ExileFromCost (InHandOf ForPlay You <> basic (exilableLevels [0 .. 5]))]
+    , withTooltip "$cards.tooltips.cantSaveThemAll.discard" $ restricted attrs 2 (InThreatAreaOf You)
+        $ ActionAbility [] Nothing (ActionCost 3)
+    , withTooltip "$cards.tooltips.cantSaveThemAll.exile" $ restricted attrs 3 (InThreatAreaOf You)
+        $ ActionAbility [] Nothing (ActionCost 1 <> ExileFromCost (InHandOf ForPlay You <> basic (exilableLevels [0 .. 5])))
     ]
 
 instance RunMessage CantSaveThemAll where
@@ -30,4 +31,5 @@ instance RunMessage CantSaveThemAll where
     Revelation iid (isSource attrs -> True) -> placeInThreatArea attrs iid >> pure t
     UseThisAbility iid (isSource attrs -> True) 1 -> assignHorror iid (attrs.ability 1) 1 >> pure t
     UseThisAbility iid (isSource attrs -> True) 2 -> toDiscardBy iid (attrs.ability 2) attrs >> pure t
+    UseThisAbility iid (isSource attrs -> True) 3 -> toDiscardBy iid (attrs.ability 3) attrs >> pure t
     _ -> CantSaveThemAll <$> liftRunMessage msg attrs

@@ -1,5 +1,9 @@
 {
   "label": {
+    "robertScott": {
+      "gainResource": "Robert Scott：获得1资源",
+      "skipResource": "不获得资源"
+    },
     "fenris": {
       "chooseWylder": "选择第 {count}/4 位 Wylder 调查员（职业不能重叠）"
     },
@@ -1232,6 +1236,14 @@
     }
   },
   "tooltips": {
+    "robertScott": {
+      "exile": "放逐你弃牌堆中一张1–5级卡牌：获得等同其等级的资源。（每轮限一次。）",
+      "experience": "扑灭火灾：获得等同所选卡牌等级的额外经验。"
+    },
+    "cantSaveThemAll": {
+      "discard": "花费3个行动：弃掉“无法拯救所有人”。",
+      "exile": "花费1个行动并放逐手牌中一张0–5级卡牌：弃掉“无法拯救所有人”。"
+    },
     "aethericCurrentYuggoth": {
       "exhaustEnemyAndMove": "横置该敌人并将其移动到任意地点",
       "doNotExhaustEnemy": "不横置敌人"

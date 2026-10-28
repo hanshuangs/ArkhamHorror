@@ -78,7 +78,7 @@ import Arkham.Helpers.Card (
   getModifiedCardCost,
   passesLimits,
  )
-import Arkham.Helpers.Cost (getCanAffordCost, getSpendableResources, hasSkillTestCost)
+import Arkham.Helpers.Cost (getCanAffordCost, getSpendableResources, getSharedResourceProviders, hasSkillTestCost)
 import Arkham.Helpers.Criteria (passesCriteria)
 import Arkham.Helpers.Deck qualified as Deck
 import Arkham.Helpers.Discover
@@ -208,7 +208,7 @@ handleSpendResources a@InvestigatorAttrs {..} iid n msg = do
         pure a
   mods <- getModifiers a
   resourcePools <- forToSnd [aid | AsIfResourcePool aid <- mods] (field AssetResources)
-  sharedPools <- forToSnd (nub [donor | SharedResourcePool donor <- mods, donor /= iid]) (field InvestigatorResources)
+  sharedPools <- getSharedResourceProviders iid >>= flip forToSnd (field InvestigatorResources)
   let totalPoolResources = sum (map snd resourcePools) + sum (map snd sharedPools)
   if n <= 0 || totalPoolResources == 0
     then defaultFlow

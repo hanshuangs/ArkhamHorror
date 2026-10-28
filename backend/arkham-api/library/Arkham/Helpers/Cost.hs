@@ -239,7 +239,7 @@ getCanAffordCost_ !iid !(toSource -> source) !actions !windows' !canModify cost_
       ChooseExtendedCardCost mtcr -> selectAny mtcr
       ExileFromCost mtcr -> andM
         [ iid <=~> Matcher.InvestigatorCanRemoveCardsFromDeck
-        , selectAny mtcr
+        , selectAny (Matcher.replaceYouMatcher iid mtcr)
         , if usesDiscard mtcr then withoutModifier iid CardsCannotLeaveYourDiscardPile else pure True
         ]
       -- Revealing is something the investigator does, and a card can forbid it.
@@ -746,9 +746,15 @@ getCanAffordCost_ !iid !(toSource -> source) !actions !windows' !canModify cost_
 getSpendableResources :: HasGame m => InvestigatorId -> m Int
 getSpendableResources iid = do
   ownResources <- getOwnSpendableResources iid
-  mods <- getModifiers iid
-  sharedResources <- sum <$> traverse (field InvestigatorResources) (nub [donor | SharedResourcePool donor <- mods, donor /= iid])
+  donors <- getSharedResourceProviders iid
+  sharedResources <- sum <$> traverse (field InvestigatorResources) donors
   pure $ ownResources + sharedResources
+
+getSharedResourceProviders :: HasGame m => InvestigatorId -> m [InvestigatorId]
+getSharedResourceProviders iid = do
+  mods <- getModifiers iid
+  filterM (\donor -> withoutModifier donor CannotAffectOtherPlayersWithPlayerEffectsExceptDamage)
+    (nub [donor | SharedResourcePool donor <- mods, donor /= iid])
 
 getOwnSpendableResources :: HasGame m => InvestigatorId -> m Int
 getOwnSpendableResources iid = do

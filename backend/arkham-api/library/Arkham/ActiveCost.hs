@@ -322,7 +322,7 @@ payCostFrom msg c iid skipAdditionalCosts mCostSource cost = do
       pure c
     ChosenCardCost cid -> withPayment $ ChosenCardPayment cid
     ExileFromCost mtch -> do
-      cards <- select mtch
+      cards <- select (replaceYouMatcher iid mtch)
       push $ chooseOne player $ targetLabels cards \card ->
         [pay (ChosenCardCost $ toCardId card), pay (ExileCost $ toTarget card)]
       pure c

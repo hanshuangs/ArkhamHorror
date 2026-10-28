@@ -30,11 +30,11 @@ instance HasModifiersFor RobertScott where
 
 instance HasAbilities RobertScott where
   getAbilities (RobertScott attrs) =
-    [ playerLimit PerRound
+    [ withTooltip "$cards.tooltips.robertScott.exile" $ playerLimit PerRound
         $ restricted attrs 1 Self
         $ FastAbility (ExileFromCost $ InDiscardOf You <> basic (exilableLevels [1 .. 5]))
     ]
-    <> [ restricted attrs 2 (Self <> InVictoryDisplay (CardWithId cid) (atLeast 1))
+    <> [ withTooltip "$cards.tooltips.robertScott.experience" $ restricted attrs 2 (Self <> InVictoryDisplay (CardWithId cid) (atLeast 1))
            $ freeReaction $ oneOf [GameEnds #when, InvestigatorResigned #when You]
        | Just (cid, _) <- [(robertScottState attrs.meta).fireVictoryCard]
        , not (robertScottState attrs.meta).fireRewarded
@@ -56,15 +56,27 @@ instance RunMessage RobertScott where
       let state = robertScottState attrs.meta
       for_ state.fireVictoryCard \(_, xp) -> gameModifier attrs iid (XPModifier "Put out the Fire" xp)
       pure $ RobertScott $ saveState (state {fireRewarded = True}) attrs
-    Exiled _ card
-      | card.owner == Just attrs.id
-        || any ((== toCardId card) . toCardId) (attrs.investigatorHand <> map toCard attrs.discard) -> do
+    Exile target -> do
+      -- Remember the controller before an exiled asset/event leaves play. The
+      -- owner can differ after Teamwork; "you have exiled" follows the actor.
+      performed <- case target of
+        CardIdTarget cid -> pure $ any ((== cid) . toCardId) (attrs.investigatorHand <> map toCard attrs.discard)
+        AssetTarget aid -> selectAny (AssetWithId aid <> assetControlledBy attrs.id)
+        EventTarget eid -> selectAny (EventWithId eid <> EventControlledBy (be attrs))
+        _ -> pure False
+      attrs' <- liftRunMessage msg attrs
+      let state = robertScottState attrs.meta
+      pure $ RobertScott $ if performed
+        then saveState (state {pendingExiles = nub $ target : state.pendingExiles}) attrs'
+        else attrs'
+    Exiled target card
+      | target `elem` (robertScottState attrs.meta).pendingExiles -> do
           attrs' <- liftRunMessage msg attrs
-          let state = robertScottState attrs.meta
+          let state = (robertScottState attrs.meta) {pendingExiles = filter (/= target) (robertScottState attrs.meta).pendingExiles}
           if any ((== toCardId card) . toCardId) state.exiledCards
             then pure $ RobertScott attrs'
             else do
-              push $ RemoveCardFromDeckForCampaign attrs.id (toCardId card)
+              push $ RemoveCardFromDeckForCampaign (fromMaybe attrs.id card.owner) (toCardId card)
               pure $ RobertScott $ saveState (state {exiledCards = state.exiledCards <> [card]}) attrs'
     InvestigatorSpecific iid "robertScott.recover" value | attrs `is` iid -> do
       let state = robertScottState attrs.meta
@@ -79,8 +91,8 @@ instance RunMessage RobertScott where
       pure $ RobertScott $ saveState (state {elderSignPending = True}) attrs
     SkillTestEnds _ iid _ | attrs `is` iid, (robertScottState attrs.meta).elderSignPending -> do
       chooseOne iid
-        [ Label "Robert Scott: gain 1 resource" [TakeResources iid 1 (toSource ElderSign) False]
-        , Label "Do not gain a resource" []
+        [ Label "$label.cards.robertScott.gainResource" [TakeResources iid 1 (toSource ElderSign) False]
+        , Label "$label.cards.robertScott.skipResource" []
         ]
       let state = robertScottState attrs.meta
       pure $ RobertScott $ saveState (state {elderSignPending = False}) attrs
