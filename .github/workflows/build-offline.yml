@@ -99,7 +99,7 @@ jobs:
           path: |
             offline/_deps/node_modules/
             offline/_deps/frontend/
-          key: arkham-frontend-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('frontend/package-lock.json') }}
+          key: arkham-frontend-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('frontend/src/**', 'frontend/public/**', 'frontend/scripts/**', 'frontend/package*.json', 'frontend/index.html', 'frontend/vite.config.js', 'frontend/tsconfig.json') }}
           restore-keys: |
             arkham-frontend-${{ runner.os }}-${{ runner.arch }}-
 

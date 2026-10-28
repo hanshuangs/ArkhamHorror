@@ -18,7 +18,7 @@ FRONTEND_OUTPUT="${DEPS_DIR}/frontend"        # Unified output location: offline
 FRONTEND_BUILT_MARKER="${DEPS_DIR}/stamp_frontend_built"
 
 # ── Compute a hash of frontend source contents (to decide whether a rebuild is needed) ─
-# Includes: all files under src/ + package-lock.json + the index.html template
+# Includes source, public assets, build scripts/configuration and dependencies.
 # Excludes: node_modules/ (only dependency declarations matter, not installed files)
 # macOS ships `shasum` but not `sha256sum`; pick whichever is available.
 if has_cmd sha256sum; then
@@ -30,12 +30,13 @@ fi
 compute_frontend_hash() {
     (
         cd "$FRONTEND_DIR"
-        # Use find | sort to keep a stable order, then hash each file
-        find src -type f | sort | xargs _hash_cmd 2>/dev/null
-        # A package-lock.json change means dependency declarations may have changed
-        _hash_cmd package-lock.json 2>/dev/null || true
-        # Rebuild when the index.html template changes as well
-        _hash_cmd index.html 2>/dev/null || true
+        # xargs cannot execute the shell function _hash_cmd. Hash in this shell
+        # instead, otherwise source changes are silently omitted from the key.
+        find src public scripts -type f -print0 | LC_ALL=C sort -z |
+            while IFS= read -r -d '' file; do
+                _hash_cmd "$file"
+            done
+        _hash_cmd package.json package-lock.json index.html vite.config.js tsconfig.json
     ) | _hash_cmd | cut -d' ' -f1
 }
 
