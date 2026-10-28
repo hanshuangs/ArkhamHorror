@@ -5,6 +5,7 @@ import Arkham.Classes.HasGame (getGame)
 import Arkham.Helpers.Investigator (getCardAttachments)
 import Arkham.Investigator.Cards qualified as Investigators
 import Arkham.Investigator.Deck qualified as InvestigatorDeck
+import Arkham.Projection (fieldMap)
 import Data.Map.Strict qualified as Map
 import TestImport
 
@@ -47,6 +48,9 @@ spec = describe "Fenris setup" do
     actual <- wylderCodes self
     liftIO $ actual `shouldMatchList` codes
     getCardAttachments self.id Investigators.fenris >>= \saved -> liftIO $ saved `shouldBe` codes
+    -- The test answer helper leaves the previous question behind; the real
+    -- answer endpoint clears it before running the selected messages.
+    run ClearUI
     run $ SetupInvestigator self.id
     questions <- gameQuestion <$> getGame
     liftIO $ questions `shouldBe` mempty

@@ -3,7 +3,9 @@ module Arkham.Investigator.Cards.FenrisSpec (spec) where
 import Arkham.Action.Additional
 import Arkham.Investigator.Cards qualified as Investigators
 import Arkham.Investigator.Deck qualified as InvestigatorDeck
+import Arkham.Projection (field)
 import Arkham.Skill.Cards qualified as Skills
+import Arkham.Token (setTokens)
 import Data.Aeson (Result (..))
 import Data.Map.Strict qualified as Map
 import TestImport.New

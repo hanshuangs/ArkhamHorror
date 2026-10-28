@@ -3,6 +3,7 @@ module Arkham.Enemy.Cards.IreressSpec (spec) where
 import Arkham.Ability.Types
 import Arkham.Constants
 import Arkham.Enemy.CardDefs.Fenris qualified as Enemies
+import Arkham.Enemy.Types qualified as Enemy
 import Arkham.Investigator.Cards qualified as Investigators
 import Arkham.Investigator.Types (Field (InvestigatorActionsPerformed))
 import Arkham.Placement
@@ -13,7 +14,7 @@ spec :: Spec
 spec = describe "Ireress" do
   it "retains its basic fight, evade, and engage actions" . gameTest $ \self -> do
     ireress <- createWeaknessEnemy self Enemies.ireress
-    map abilityIndex <$> ireress.abilities
+    (map abilityIndex <$> ireress.abilities)
       `shouldMatchListM` [AbilityAttack, AbilityEvade, AbilityEngage, 1]
 
   for_ [AbilityAttack, AbilityEvade] \actionIndex -> do
@@ -52,7 +53,9 @@ spec = describe "Ireress" do
       location <- testLocation
       self `moveTo` location
       ireress <- createWeaknessEnemy self Enemies.ireress
-      run $ PlaceEnemy (toId ireress) (AtLocation $ toId location)
+      -- Avoid spawning its swarm: only the unengaged host's action choices
+      -- are relevant to this case.
+      overTest $ entitiesL . enemiesL . ix (toId ireress) %~ overAttrs (\a -> a {Enemy.enemyPlacement = AtLocation $ toId location})
       self.engagedEnemies `shouldReturn` []
       setChaosTokens [Zero]
 
@@ -75,4 +78,4 @@ spec = describe "Ireress" do
     run =<< gameModifier (TestSource mempty) (toTarget ireress) CannotBeEvaded
 
     duringTurn self do
-      filter ((== 1) . abilityIndex) <$> self `getActionsFrom` ireress `shouldReturn` []
+      (filter ((== 1) . abilityIndex) <$> self `getActionsFrom` ireress) `shouldReturn` []
