@@ -2,6 +2,7 @@ module Arkham.Investigator.RobertScott where
 
 import Arkham.Card
 import Arkham.Classes.HasGame
+import {-# SOURCE #-} Arkham.Game ()
 import Arkham.Id
 import Arkham.Investigator.Types (Field (InvestigatorMeta))
 import Arkham.Matcher

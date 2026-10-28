@@ -29,6 +29,7 @@ import Arkham.Helpers.Modifiers (
   toModifiers,
   withModifiers,
   withModifiersOf,
+  withoutModifier,
  )
 import Arkham.Helpers.Query (getActiveInvestigatorId, getInvestigators)
 import Arkham.Helpers.Slot
