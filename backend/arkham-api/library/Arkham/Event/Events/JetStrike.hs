@@ -4,6 +4,7 @@ import Arkham.Card
 import Arkham.Cost (chosenCardPayment)
 import Arkham.Event.Cards qualified as Cards
 import Arkham.Event.Import.Lifted
+import Arkham.GameEnv (getCard)
 import Arkham.Investigator.RobertScott
 import Arkham.Modifier
 

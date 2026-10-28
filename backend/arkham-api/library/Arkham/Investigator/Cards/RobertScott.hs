@@ -3,11 +3,13 @@ module Arkham.Investigator.Cards.RobertScott (robertScott) where
 import Arkham.Ability
 import Arkham.Card
 import Arkham.Cost
-import Arkham.Helpers.Modifiers
+import Arkham.GameEnv (getCard)
+import Arkham.Helpers.Modifiers (modifySelect)
 import Arkham.Investigator.Cards qualified as Cards
 import Arkham.Investigator.Import.Lifted hiding (InvestigatorResigned)
 import Arkham.Investigator.RobertScott
 import Arkham.Matcher
+import Arkham.Modifier (ModifierType (..))
 
 newtype RobertScott = RobertScott InvestigatorAttrs
   deriving anyclass IsInvestigator
