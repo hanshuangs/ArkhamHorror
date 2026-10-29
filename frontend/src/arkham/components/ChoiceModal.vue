@@ -15,6 +15,7 @@ import DrawSpotlight from '@/arkham/components/DrawSpotlight.vue';
 import { abilityNeedsGhostModal } from '@/arkham/ghostAbility';
 import { putBackInAnyOrderPicks } from '@/arkham/putBackInAnyOrder';
 import { storyCardRead as findStoryCardRead } from '@/arkham/storyCardRead';
+import { unanchoredCardTargetIds, visibleCardChoiceIds } from '@/arkham/questionCardTargets';
 
 export interface Props {
   game: Game
@@ -170,7 +171,8 @@ const paymentAmountsLabel = computed(() => {
 })
 
 const choicesRequireModal = computed(() =>
-  choices.value.some((c) => choiceRequiresModal(c) || abilityNeedsGhostModal(props.game, c))
+  unanchoredCardTargetIds(choices.value, visibleCardChoiceIds(props.game, props.playerId)).size > 0
+    || choices.value.some((c) => choiceRequiresModal(c) || abilityNeedsGhostModal(props.game, c))
 )
 
 const tokenChoices = computed(() => props.game.scenario?.chaosBag.choice)
