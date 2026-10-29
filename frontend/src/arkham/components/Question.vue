@@ -26,6 +26,7 @@ import CardImage from '@/arkham/components/CardImage.vue';
 import CardPoolPicker from '@/arkham/components/CardPoolPicker.vue';
 import { cardPoolForLabelKey } from '@/arkham/cardPools';
 import { putBackInAnyOrderPicks } from '@/arkham/putBackInAnyOrder';
+import { unanchoredCardTargets } from '@/arkham/questionCardTargets';
 import PutBackInAnyOrder from '@/arkham/components/PutBackInAnyOrder.vue';
 
 export interface Props {
@@ -320,7 +321,7 @@ const focusedCardsForGroups = computed(() => {
     cardLabelCounts.set(choice.cardCode, (cardLabelCounts.get(choice.cardCode) ?? 0) + 1)
   }
 
-  return focusedCards.value.filter((card) => {
+  return [...focusedCards.value, ...missingTargetCards.value].filter((card) => {
     const cardCode = toCardContents(card).cardCode
     const remaining = cardLabelCounts.get(cardCode) ?? 0
     if (remaining === 0) return true
@@ -442,6 +443,10 @@ const cardChoiceHandledElsewhereIds = computed(() => {
   ])
 })
 
+const missingTargetCards = computed(() => unanchoredCardTargets(
+  choices.value, props.game.cards, cardChoiceHandledElsewhereIds.value,
+))
+
 // Scarlet keys draw their own ability buttons next to the key art. Collect the
 // keys that are actually on screen, so a key with no anchor still falls through
 // to the generic button list instead of losing its ability entirely.
@@ -553,6 +558,7 @@ function targetLabelHandledElsewhere(choice: TargetLabel) {
       case 'ConcealedCardTarget':
       case 'ConcealedTarget': return contents in props.game.concealed
       case 'CardIdTarget': return cardChoiceHandledElsewhereIds.value.has(contents)
+        || missingTargetCards.value.some((card) => toCardContents(card).id === contents)
       case 'ChaosTokenFaceTarget': return props.game.focusedChaosTokens.some((token) => token.face === contents)
       default: return false
     }
@@ -573,6 +579,10 @@ const showChoices = computed(() => {
     return false
   }
   if (choices.value.some(choiceRequiresModal)) {
+    return true
+  }
+  if (missingTargetCards.value.length > 0
+    || questionChoices.value.some(([choice]) => choice.tag === MessageType.TARGET_LABEL)) {
     return true
   }
   // An ability whose source card has left play has no card to carry its button, so the
