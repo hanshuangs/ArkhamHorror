@@ -3,6 +3,7 @@ module Arkham.Investigator.Cards.RobertScott (robertScott) where
 import Arkham.Ability
 import Arkham.Card
 import Arkham.Cost
+import Arkham.Event.Types (Field (EventController))
 import Arkham.GameEnv (getCard)
 import Arkham.Helpers.Modifiers (modifySelect)
 import Arkham.Investigator.Cards qualified as Cards
@@ -10,6 +11,8 @@ import Arkham.Investigator.Import.Lifted hiding (InvestigatorResigned)
 import Arkham.Investigator.RobertScott
 import Arkham.Matcher
 import Arkham.Modifier (ModifierType (..))
+import Arkham.Projection (fieldP)
+import Arkham.Skill.Types (Field (SkillController))
 
 newtype RobertScott = RobertScott InvestigatorAttrs
   deriving anyclass IsInvestigator
@@ -64,8 +67,8 @@ instance RunMessage RobertScott where
       performed <- case target of
         CardIdTarget cid -> pure $ any ((== cid) . toCardId) (attrs.investigatorHand <> map toCard attrs.discard)
         AssetTarget aid -> selectAny (AssetWithId aid <> assetControlledBy attrs.id)
-        EventTarget eid -> selectAny (EventWithId eid <> EventControlledBy (be attrs))
-        SkillTarget sid -> selectAny (SkillWithId sid <> SkillControlledBy (be attrs))
+        EventTarget eid -> ifM (selectAny $ EventWithId eid) (fieldP EventController (== attrs.id) eid) (pure False)
+        SkillTarget sid -> ifM (selectAny $ SkillWithId sid) (fieldP SkillController (== attrs.id) sid) (pure False)
         _ -> pure False
       attrs' <- liftRunMessage msg attrs
       let state = robertScottState attrs.meta

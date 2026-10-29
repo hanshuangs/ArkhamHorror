@@ -8,6 +8,7 @@ import Arkham.Helpers.Xp (getXpWithBonus)
 import Arkham.Helpers.Scenario (getVictoryDisplay)
 import Arkham.Investigator.Cards qualified as Investigators
 import Arkham.Investigator qualified as RuntimeInvestigators
+import Arkham.Matcher.Event (EventMatcher (EventWithCardId, EventWithId))
 import Arkham.Investigator.RobertScott
 import Arkham.Matcher.Skill (SkillMatcher (SkillWithId))
 import Arkham.Placement (Placement (Limbo))
@@ -120,6 +121,17 @@ spec = describe "Robert Scott" do
       run $ CreateSkill sid card self.id Limbo
       run $ Exile (SkillTarget sid)
       select (SkillWithId sid) `shouldReturn` []
+      state <- getRobertScottState self.id
+      state.exiledCards `shouldBe` [card]
+      availableExiledCards state `shouldBe` [card]
+
+  it "records an event that is exiled while resolving in limbo"
+    . gameTestWith Investigators.robertScott $ \self -> do
+      card <- genMyCard self Events.aTestOfWill1
+      run $ CreateEventAt self.id card Limbo
+      eid <- selectJust $ EventWithCardId (toCardId card)
+      run $ Exile (EventTarget eid)
+      select (EventWithId eid) `shouldReturn` []
       state <- getRobertScottState self.id
       state.exiledCards `shouldBe` [card]
       availableExiledCards state `shouldBe` [card]
