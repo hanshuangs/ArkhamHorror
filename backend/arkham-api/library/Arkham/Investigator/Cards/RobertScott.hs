@@ -67,8 +67,12 @@ instance RunMessage RobertScott where
       performed <- case target of
         CardIdTarget cid -> pure $ any ((== cid) . toCardId) (attrs.investigatorHand <> map toCard attrs.discard)
         AssetTarget aid -> selectAny (AssetWithId aid <> assetControlledBy attrs.id)
-        EventTarget eid -> ifM (selectAny $ EventWithId eid) (fieldP EventController (== attrs.id) eid) (pure False)
-        SkillTarget sid -> ifM (selectAny $ SkillWithId sid) (fieldP SkillController (== attrs.id) sid) (pure False)
+        EventTarget eid -> do
+          exists <- selectAny $ EventWithId eid
+          if exists then fieldP EventController (== attrs.id) eid else pure False
+        SkillTarget sid -> do
+          exists <- selectAny $ SkillWithId sid
+          if exists then fieldP SkillController (== attrs.id) sid else pure False
         _ -> pure False
       attrs' <- liftRunMessage msg attrs
       let state = robertScottState attrs.meta
